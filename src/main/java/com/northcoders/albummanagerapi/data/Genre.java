@@ -1,4 +1,4 @@
-package com.northcoders.jv_be_record_manager_api.data;
+package com.northcoders.albummanagerapi.data;
 
 public enum Genre {
     ROCK(1, "Rock"),

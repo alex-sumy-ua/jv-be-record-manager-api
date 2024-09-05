@@ -1,7 +1,7 @@
 # Read Me First
 The following was discovered as part of building this project:
 
-* The original package name 'com.northcoders.jv-be-record-manager-api' is invalid and this project uses 'com.northcoders.jv_be_record_manager_api' instead.
+* The original package name 'com.northcoders.jv-be-record-manager-api' is invalid and this project uses 'com.northcoders.albummanagerapi' instead.
 
 # Getting Started
 

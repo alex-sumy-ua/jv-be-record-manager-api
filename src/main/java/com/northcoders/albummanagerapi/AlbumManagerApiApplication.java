@@ -1,13 +1,13 @@
-package com.northcoders.jv_be_record_manager_api;
+package com.northcoders.albummanagerapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JvBeRecordManagerApiApplication {
+public class AlbumManagerApiApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(JvBeRecordManagerApiApplication.class, args);
+		SpringApplication.run(AlbumManagerApiApplication.class, args);
 	}
 
 }

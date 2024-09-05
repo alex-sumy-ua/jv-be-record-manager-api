@@ -1,12 +1,10 @@
-package com.northcoders.jv_be_record_manager_api.data;
+package com.northcoders.albummanagerapi.data;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 
 @Entity
 @Data
@@ -26,14 +24,15 @@ public class Album {
     private String description;
 
     @Column
-    private LocalDate year;
+    private int released;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "artist_id", nullable = false)
     private Artist artist;
 
-    @Column
-    @Enumerated(EnumType.STRING)
+    // Remove check constraint and use integer type for genre
+    @Column(columnDefinition = "integer")
+    @Enumerated(EnumType.ORDINAL)
     private Genre genre;
 
     @Column
