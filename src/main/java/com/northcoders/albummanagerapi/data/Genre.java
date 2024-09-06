@@ -1,24 +1,24 @@
 package com.northcoders.albummanagerapi.data;
 
 public enum Genre {
-    ROCK(1, "Rock"),
-    PROGROCK(2, "Progressive Rock"),
-    METAL(3, "Metal"),
-    SKA(4, "Ska"),
-    JAZZ(5, "Jazz"),
-    POP(6, "Pop"),
-    HIPHOP(7, "Hip-Hop"),
-    RNB(8, "R&B"),
-    CLASSICAL(9, "Classical"),
-    ELECTRONIC(10, "Electronic"),
-    BLUES(11, "Blues");
+    ROCK(1, "ROCK"),
+    PROGROCK(2, "PROGROCK"),
+    METAL(3, "METAL"),
+    SKA(4, "SKA"),
+    JAZZ(5, "JAZZ"),
+    POP(6, "POP"),
+    HIPHOP(7, "HIPHOP"),
+    RNB(8, "RNB"),
+    CLASSICAL(9, "CLASSICAL"),
+    ELECTRONIC(10, "ELECTRONIC"),
+    BLUES(11, "BLUES");
 
-    final int index;
-    final String genreDescriptor;
+    public final int index;
+    public final String descriptor;
 
     Genre(int index, String genreDescriptor) {
         this.index = index;
-        this.genreDescriptor = genreDescriptor;
+        this.descriptor = genreDescriptor;
     }
 
 }

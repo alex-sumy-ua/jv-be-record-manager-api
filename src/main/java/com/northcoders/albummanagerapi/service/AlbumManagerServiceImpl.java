@@ -3,13 +3,28 @@ package com.northcoders.albummanagerapi.service;
 import com.northcoders.albummanagerapi.data.Album;
 import com.northcoders.albummanagerapi.data.Artist;
 import com.northcoders.albummanagerapi.data.Genre;
+import com.northcoders.albummanagerapi.repository.AlbumManagerRepository;
+import com.northcoders.albummanagerapi.repository.ArtistRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class AlbumManagerServiceImpl implements AlbumManagerService {
+
+    @Autowired
+    private AlbumManagerRepository albumManagerRepository;
+
+    @Autowired
+    private ArtistRepository artistRepository;
+
     @Override
     public List<Album> getAllAlbums() {
-        return List.of();
+        List<Album> albums = new ArrayList<>();
+        albumManagerRepository.findAll().forEach(albums::add);
+        return albums;
     }
 
     @Override
