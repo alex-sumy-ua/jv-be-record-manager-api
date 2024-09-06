@@ -1,5 +1,6 @@
 package com.northcoders.albummanagerapi.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.northcoders.albummanagerapi.data.Album;
 import com.northcoders.albummanagerapi.data.Artist;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -21,7 +23,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -100,7 +102,7 @@ class AlbumManagerControllerTests {
         when(mockAlbumManagerService.getAlbumById(5L)).thenReturn(album);
 
         this.mockMvcController.perform(
-                        MockMvcRequestBuilders.get("/api/v1/album/5"))
+                MockMvcRequestBuilders.get("/api/v1/album/5"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(5))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Fight"))
@@ -111,4 +113,54 @@ class AlbumManagerControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(20))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.inStock").value(99));
     }
+
+    @Test
+    @DisplayName("Adding an album check")
+    void testPostMappingAddAlbum() throws Exception {
+
+        Artist artist = new Artist(2L, "George Michael", "Singer");
+
+        Album album = new Album(5L, "Fight", "The first solo album", 1987, artist, Genre.PROGROCK, 20, 99);
+
+        when(mockAlbumManagerService.addArtist(artist)).thenReturn(artist);
+        when(mockAlbumManagerService.addAlbum(album)).thenReturn(album);
+
+        this.mockMvcController.perform(
+                MockMvcRequestBuilders.post("/api/v1/album")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(album)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(5))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Fight"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("The first solo album"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.released").value(1987))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value(artist))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.PROGROCK.descriptor))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(20))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.inStock").value(99));
+
+        verify(mockAlbumManagerService, times(1)).addAlbum(any(Album.class));
+
+    }
+
+//    @Test
+//    @DisplayName("Adding an artist check")
+//    void testPostMappingAddArtist() throws Exception {
+//
+//        Artist artist = new Artist(2L, "George Michael", "Singer");
+//
+//        when(mockAlbumManagerService.addArtist(artist)).thenReturn(artist);
+//
+//        this.mockMvcController.perform(
+//                        MockMvcRequestBuilders.post("/api/v1/album/artist")
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                                .content(mapper.writeValueAsString(artist)))
+//                .andExpect(MockMvcResultMatchers.status().isCreated())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(2))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Fight"))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("Singer"));
+//
+//        verify(mockAlbumManagerService, times(1)).addArtist(any(Artist.class));
+//    }
+
 }

@@ -35,6 +35,16 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
+    public Artist addArtist(Artist artist) {
+        return artistRepository.save(artist);
+    }
+
+    @Override
+    public Album addAlbum(Album album) {
+        return albumManagerRepository.save(album);
+    }
+
+    @Override
     public List<Album> getAlbumByArtist(Artist artist) {
         return List.of();
     }
@@ -55,11 +65,6 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public Album addAlbum(Album Album) {
-        return null;
-    }
-
-    @Override
     public Album updateAlbum(Album albumFound, Album albumUpdated) {
         return null;
     }
@@ -72,11 +77,6 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     @Override
     public String deleteAlbum(Album album) {
         return "";
-    }
-
-    @Override
-    public Artist insertArtist(Artist artist) {
-        return null;
     }
 
     @Override

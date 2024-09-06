@@ -22,7 +22,7 @@ public interface AlbumManagerService {
     // Not in scope but useful
     String deleteAlbum(Album album);
 
-    Artist insertArtist(Artist artist);
+    Artist addArtist(Artist artist);
     Artist getArtistById(Long id);
     String deleteArtistById(Long id);
 
