@@ -3,6 +3,7 @@ package com.northcoders.albummanagerapi.service;
 import com.northcoders.albummanagerapi.data.Album;
 import com.northcoders.albummanagerapi.data.Artist;
 import com.northcoders.albummanagerapi.data.Genre;
+import com.northcoders.albummanagerapi.exception.ItemNotFoundException;
 import com.northcoders.albummanagerapi.repository.AlbumManagerRepository;
 import com.northcoders.albummanagerapi.repository.ArtistRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,8 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public Album getAlbumById(Long id) {
-        return null;
+        return albumManagerRepository.findById(id).orElseThrow(() ->
+                new ItemNotFoundException(String.format("The album with id '%s' cannot be found.", id)));
     }
 
     @Override

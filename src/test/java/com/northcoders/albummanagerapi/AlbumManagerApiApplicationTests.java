@@ -13,11 +13,6 @@ class AlbumManagerApiApplicationTests {
 	}
 
 	@Test
-	@DisplayName("Generated test method")
-	void main() {
-	}
-
-	@Test
 	@DisplayName("Application check")
 	void applicationStarts() {
 		AlbumManagerApiApplication.main(new String[] {});

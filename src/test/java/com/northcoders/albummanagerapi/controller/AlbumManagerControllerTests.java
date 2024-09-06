@@ -88,4 +88,27 @@ class AlbumManagerControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].price").value(18))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[2].inStock").value(60));
     }
+
+    @Test
+    @DisplayName("Returns an album by given id from the DB")
+    void getAlbumByIdReturnsAlbum() throws Exception {
+
+        Artist artist = new Artist(2L, "George Michael", "Singer");
+
+        Album album = new Album(5L, "Fight", "The first solo album", 1987, artist, Genre.PROGROCK, 20, 99);
+
+        when(mockAlbumManagerService.getAlbumById(5L)).thenReturn(album);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.get("/api/v1/album/5"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(5))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Fight"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("The first solo album"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.released").value(1987))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value(artist))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.PROGROCK.descriptor))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(20))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.inStock").value(99));
+    }
 }

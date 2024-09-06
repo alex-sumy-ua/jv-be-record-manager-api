@@ -22,9 +22,9 @@ public class AlbumManagerController {
         return albumManagerService.getAllAlbums();
     }
 
-//    @GetMapping("/album/{id}")
-//    public Album getAlbumById(@PathVariable Long id) {
-//        return albumManagerService.getAlbumById(id);
-//    }
+    @GetMapping("/album/{id}")
+    public Album getAlbumById(@PathVariable Long id) {
+        return albumManagerService.getAlbumById(id);
+    }
 
 }
