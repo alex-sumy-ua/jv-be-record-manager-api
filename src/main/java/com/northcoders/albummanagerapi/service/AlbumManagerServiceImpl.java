@@ -6,6 +6,7 @@ import com.northcoders.albummanagerapi.data.Genre;
 import com.northcoders.albummanagerapi.exception.ItemNotFoundException;
 import com.northcoders.albummanagerapi.repository.AlbumManagerRepository;
 import com.northcoders.albummanagerapi.repository.ArtistRepository;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,6 +57,15 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
         return albumManagerRepository.save(albumFound);
     }
 
+    @SneakyThrows
+    @Override
+    public String deleteAlbumById(Long id) {
+        Album album = getAlbumById(id);
+        albumManagerRepository.delete(album);
+        return String.format("Album with ID %s has been deleted", id);
+    }
+
+
 
 
 
@@ -79,11 +89,6 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     @Override
     public Album getAlbumByTitle(String title) {
         return null;
-    }
-
-    @Override
-    public String deleteAlbumById(Long id) {
-        return "";
     }
 
     @Override

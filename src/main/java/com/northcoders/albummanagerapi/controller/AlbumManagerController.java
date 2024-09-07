@@ -55,5 +55,11 @@ public class AlbumManagerController {
         }
     }
 
+    @DeleteMapping("/albums/{id}")    // usage: http://localhost:8082/api/v1/albums/2
+    public String deleteAlbumById(@PathVariable ("id") Long id) {
+        return albumManagerService.deleteAlbumById(id);
+    }
+
+
 
 }

@@ -128,7 +128,6 @@ class AlbumManagerServiceTests {
         Album existingAlbum = new Album(albumId, "Fight", "The first solo album", 1987, artist1, Genre.PROGROCK, 20, 99);
         Album updatedAlbum = new Album(albumId, "The Best", "The best melodies", 2022, artist2, Genre.CLASSICAL, 15, 88);
 
-
         when(mockAlbumManagerRepository.findById(albumId)).thenReturn(Optional.of(existingAlbum));
         when(mockAlbumManagerRepository.save(existingAlbum)).thenReturn(updatedAlbum);
 
@@ -139,4 +138,27 @@ class AlbumManagerServiceTests {
         assertThat(actualResult).isEqualTo(updatedAlbum);
 
     }
+
+    @Test
+    @DisplayName("Deleting the album by given id")
+    public void testDeleteBookById() {
+        // Arrange
+        Long albumId = 5L;
+
+        Artist artist1 = new Artist(1L, "George Michael", "Singer");
+        Artist artist2 = new Artist(2L, "Pol Moria Orchestra", "Orchestra");
+
+        Album album1 = new Album(albumId, "Fight", "The first solo album", 1987, artist1, Genre.PROGROCK, 20, 99);
+        Album album2 = new Album(albumId, "The Best", "The best melodies", 2022, artist2, Genre.CLASSICAL, 15, 88);
+
+        when(mockAlbumManagerRepository.findById(albumId)).thenReturn(Optional.of(album2));
+        doNothing().when(mockAlbumManagerRepository).deleteById(albumId);
+
+        String actualResult = albumManagerService.deleteAlbumById(albumId);
+
+        assertThat(actualResult).isEqualTo("Album with ID " + albumId + " has been deleted");
+    }
+
+
+
 }

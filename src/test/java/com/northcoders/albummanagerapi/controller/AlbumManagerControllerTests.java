@@ -196,4 +196,27 @@ class AlbumManagerControllerTests {
         verify(mockAlbumManagerService, times(1)).addArtist(any(Artist.class));
     }
 
+    @Test
+    @DisplayName("Deleting an album by its id check")
+    public void testDeleteBookById() throws Exception {
+
+        Long albumId = 2L;
+
+        Artist artist = new Artist(1L, "George Michael", "Singer");
+
+        Album album = new Album(2L, "Fight", "The first solo album", 1987, artist, Genre.PROGROCK, 20, 99);
+
+        when(mockAlbumManagerService.addArtist(artist)).thenReturn(artist);
+        when(mockAlbumManagerService.addAlbum(album)).thenReturn(album);
+        when(mockAlbumManagerService.deleteAlbumById(2L)).thenReturn("Album with ID " + albumId + " has been deleted");
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.delete("/api/v1/albums/2"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("Album with ID " + albumId + " has been deleted"));
+
+        verify(mockAlbumManagerService, times(1)).deleteAlbumById(2L);
+    }
+
+
 }
