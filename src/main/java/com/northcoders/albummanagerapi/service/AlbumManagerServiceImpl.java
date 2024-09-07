@@ -45,6 +45,23 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
+    public Album updateAlbum(Album albumFound, Album albumUpdated) {
+        albumFound.setTitle(albumUpdated.getTitle());
+        albumFound.setDescription(albumUpdated.getDescription());
+        albumFound.setReleased(albumUpdated.getReleased());
+        albumFound.setArtist(albumUpdated.getArtist());
+        albumFound.setGenre(albumUpdated.getGenre());
+        albumFound.setPrice(albumUpdated.getPrice());
+        albumFound.setInStock(albumUpdated.getInStock());
+        return albumManagerRepository.save(albumFound);
+    }
+
+
+
+
+
+
+    @Override
     public List<Album> getAlbumByArtist(Artist artist) {
         return List.of();
     }
@@ -61,11 +78,6 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public Album getAlbumByTitle(String title) {
-        return null;
-    }
-
-    @Override
-    public Album updateAlbum(Album albumFound, Album albumUpdated) {
         return null;
     }
 

@@ -22,7 +22,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @AutoConfigureMockMvc
@@ -140,27 +142,58 @@ class AlbumManagerControllerTests {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.inStock").value(99));
 
         verify(mockAlbumManagerService, times(1)).addAlbum(any(Album.class));
-
     }
 
-//    @Test
-//    @DisplayName("Adding an artist check")
-//    void testPostMappingAddArtist() throws Exception {
-//
-//        Artist artist = new Artist(2L, "George Michael", "Singer");
-//
-//        when(mockAlbumManagerService.addArtist(artist)).thenReturn(artist);
-//
-//        this.mockMvcController.perform(
-//                        MockMvcRequestBuilders.post("/api/v1/album/artist")
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(mapper.writeValueAsString(artist)))
-//                .andExpect(MockMvcResultMatchers.status().isCreated())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(2))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Fight"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("Singer"));
-//
-//        verify(mockAlbumManagerService, times(1)).addArtist(any(Artist.class));
-//    }
+    @Test
+    @DisplayName("Updating any field of the album expect id")
+    void testUpdateAlbumById() throws Exception {
+        Long albumId = 5L;
+
+        Artist artist1 = new Artist(1L, "George Michael", "Singer");
+        Artist artist2 = new Artist(2L, "Pol Moria Orchestra", "Orchestra");
+
+        Album existingAlbum = new Album(albumId, "Fight", "The first solo album", 1987, artist1, Genre.PROGROCK, 20, 99);
+        Album updatedAlbum = new Album(albumId, "The Best", "The best melodies", 2022, artist2, Genre.CLASSICAL, 15, 88);
+
+        when(mockAlbumManagerService.getAlbumById(albumId)).thenReturn(existingAlbum);
+        when(mockAlbumManagerService.updateAlbum(existingAlbum, updatedAlbum)).thenReturn(updatedAlbum);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.put("/api/v1/albums/5")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(updatedAlbum)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(albumId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("The Best"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("The best melodies"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.released").value(2022))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value(artist2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.CLASSICAL.descriptor))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(15))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.inStock").value(88));
+
+        verify(mockAlbumManagerService, times(1)).getAlbumById(albumId);
+        verify(mockAlbumManagerService, times(1)).updateAlbum(existingAlbum, updatedAlbum);
+    }
+
+    @Test
+    @DisplayName("Adding an artist check")
+    void testPostMappingAddArtist() throws Exception {
+
+        Artist artist = new Artist(2L, "George Michael", "Singer");
+
+        when(mockAlbumManagerService.addArtist(artist)).thenReturn(artist);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.post("/api/v1/albums/artist")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(artist)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("George Michael"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("Singer"));
+
+        verify(mockAlbumManagerService, times(1)).addArtist(any(Artist.class));
+    }
 
 }
