@@ -92,30 +92,25 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
         return String.format("Artist with ID %s has been deleted", id);
     }
 
-
-
-
-
-
-
     @Override
     public List<Album> getAlbumByArtist(Artist artist) {
-        return List.of();
+        return albumManagerRepository.findByArtist(artist);
     }
 
     @Override
     public List<Album> getAlbumByYear(int released) {
-        return List.of();
+        return albumManagerRepository.findByReleased(released);
     }
 
     @Override
     public List<Album> getAlbumByGenre(Genre genre) {
-        return List.of();
+        return albumManagerRepository.findByGenre(genre);
     }
 
     @Override
     public Album getAlbumByTitle(String title) {
-        return null;
+        return albumManagerRepository.findByTitle(title).orElseThrow(() ->
+                new ItemNotFoundException(String.format("The album with title %s cannot be found.", title)));
     }
 
 }

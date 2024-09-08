@@ -2,6 +2,7 @@ package com.northcoders.albummanagerapi.controller;
 
 import com.northcoders.albummanagerapi.data.Album;
 import com.northcoders.albummanagerapi.data.Artist;
+import com.northcoders.albummanagerapi.data.Genre;
 import com.northcoders.albummanagerapi.service.AlbumManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -84,6 +85,31 @@ public class AlbumManagerController {
     @DeleteMapping("/albums/{id}")    // usage: http://localhost:8082/api/v1/albums/2
     public String deleteAlbumById(@PathVariable ("id") Long id) {
         return albumManagerService.deleteAlbumById(id);
+    }
+
+    @GetMapping("/albums/artist")  // usage: http://localhost:8082/api/v1/albums/artist?artistId=2
+    public ResponseEntity<List<Album>> getAlbumByArtist(@RequestParam Long artistId) {
+        Artist artist = albumManagerService.getArtistById(artistId);
+        List<Album> albums = albumManagerService.getAlbumByArtist(artist);
+        return new ResponseEntity<>(albums, HttpStatus.OK);
+    }
+
+    @GetMapping("/albums/year")  // usage: http://localhost:8082/api/v1/albums/year?released=1982
+    public ResponseEntity<List<Album>> getAlbumByYear(@RequestParam int released) {
+        List<Album> albums = albumManagerService.getAlbumByYear(released);
+        return new ResponseEntity<>(albums, HttpStatus.OK);
+    }
+
+    @GetMapping("/albums/genre")  // usage: http://localhost:8082/api/v1/albums/genre?genre=ROCK
+    public ResponseEntity<List<Album>> getAlbumByGenre(@RequestParam Genre genre) {
+        List<Album> albums = albumManagerService.getAlbumByGenre(genre);
+        return new ResponseEntity<>(albums, HttpStatus.OK);
+    }
+
+    @GetMapping("/albums/title")  // usage: http://localhost:8082/api/v1/albums/title?title=The Wall
+    public ResponseEntity<Album> getAlbumByTitle(@RequestParam String title) {
+        Album album = albumManagerService.getAlbumByTitle(title);
+        return new ResponseEntity<>(album, HttpStatus.OK);
     }
 
 }
