@@ -145,8 +145,8 @@ class AlbumManagerControllerTests {
     }
 
     @Test
-    @DisplayName("Updating any field of the album expect id")
-    void testUpdateAlbumById() throws Exception {
+    @DisplayName("Updating any field of the album except id")
+    void testUpdateAlbum() throws Exception {
         Long albumId = 5L;
 
         Artist artist1 = new Artist(1L, "George Michael", "Singer");
@@ -177,6 +177,28 @@ class AlbumManagerControllerTests {
     }
 
     @Test
+    @DisplayName("Deleting an album by its id check")
+    public void testDeleteAlbumById() throws Exception {
+
+        Long albumId = 2L;
+
+        Artist artist = new Artist(1L, "George Michael", "Singer");
+
+        Album album = new Album(albumId, "Fight", "The first solo album", 1987, artist, Genre.PROGROCK, 20, 99);
+
+        when(mockAlbumManagerService.addArtist(artist)).thenReturn(artist);
+        when(mockAlbumManagerService.addAlbum(album)).thenReturn(album);
+        when(mockAlbumManagerService.deleteAlbumById(albumId)).thenReturn("Album with ID " + albumId + " has been deleted");
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.delete("/api/v1/albums/2"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("Album with ID " + albumId + " has been deleted"));
+
+        verify(mockAlbumManagerService, times(1)).deleteAlbumById(albumId);
+    }
+
+    @Test
     @DisplayName("Adding an artist check")
     void testPostMappingAddArtist() throws Exception {
 
@@ -197,25 +219,87 @@ class AlbumManagerControllerTests {
     }
 
     @Test
-    @DisplayName("Deleting an album by its id check")
-    public void testDeleteBookById() throws Exception {
+    @DisplayName("Returns all artists from the DB")
+    void getAllArtistsReturnsAlbums() throws Exception {
 
-        Long albumId = 2L;
+        List<Artist> artists = new ArrayList<>();
+        artists.add(new Artist(1L, "George Michael", "Singer"));
+        artists.add(new Artist(2L, "Pol Moria Orchestra", "Orchestra"));
+        artists.add(new Artist(3L, "Pink Floyd", "Band"));
 
-        Artist artist = new Artist(1L, "George Michael", "Singer");
-
-        Album album = new Album(2L, "Fight", "The first solo album", 1987, artist, Genre.PROGROCK, 20, 99);
-
-        when(mockAlbumManagerService.addArtist(artist)).thenReturn(artist);
-        when(mockAlbumManagerService.addAlbum(album)).thenReturn(album);
-        when(mockAlbumManagerService.deleteAlbumById(2L)).thenReturn("Album with ID " + albumId + " has been deleted");
+        when(mockAlbumManagerService.getAllArtists()).thenReturn(artists);
 
         this.mockMvcController.perform(
-                        MockMvcRequestBuilders.delete("/api/v1/albums/2"))
+                        MockMvcRequestBuilders.get("/api/v1/albums/artists"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("Album with ID " + albumId + " has been deleted"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("George Michael"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].role").value("Singer"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Pol Moria Orchestra"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].role").value("Orchestra"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].id").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].name").value("Pink Floyd"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].role").value("Band"));
+    }
 
-        verify(mockAlbumManagerService, times(1)).deleteAlbumById(2L);
+    @Test
+    @DisplayName("Returns an artist by given id from the DB")
+    void getArtistByIdReturnsArtist() throws Exception {
+
+        Artist artist = new Artist(2L, "George Michael", "Singer");
+
+        when(mockAlbumManagerService.getArtistById(2L)).thenReturn(artist);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.get("/api/v1/albums/artist/2"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("George Michael"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("Singer"));
+    }
+
+    @Test
+    @DisplayName("Updating any field of the artist except id")
+    void testUpdateArtist() throws Exception {
+        Long artistId = 1L;
+
+        Artist existingArtist = new Artist(artistId, "George Michael", "Singer");
+        Artist updatedArtist = new Artist(artistId, "Pol Moria Orchestra", "Orchestra");
+
+        when(mockAlbumManagerService.getArtistById(artistId)).thenReturn(existingArtist);
+        when(mockAlbumManagerService.updateArtist(existingArtist, updatedArtist)).thenReturn(updatedArtist);
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.put("/api/v1/albums/artists/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(updatedArtist)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(artistId))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Pol Moria Orchestra"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.role").value("Orchestra"));
+
+        verify(mockAlbumManagerService, times(1)).getArtistById(artistId);
+        verify(mockAlbumManagerService, times(1)).updateArtist(existingArtist, updatedArtist);
+    }
+
+    @Test
+    @DisplayName("Deleting an artist by its id check")
+    public void testDeleteArtistById() throws Exception {
+
+        Long artistId = 2L;
+
+        Artist artist = new Artist(artistId, "George Michael", "Singer");
+
+        when(mockAlbumManagerService.addArtist(artist)).thenReturn(artist);
+        when(mockAlbumManagerService.deleteArtistById(artistId)).thenReturn("Artist with ID " + artistId + " has been deleted");
+
+        this.mockMvcController.perform(
+                        MockMvcRequestBuilders.delete("/api/v1/albums/artists/2"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().string("Artist with ID " + artistId + " has been deleted"));
+
+        verify(mockAlbumManagerService, times(1)).deleteArtistById(artistId);
     }
 
 

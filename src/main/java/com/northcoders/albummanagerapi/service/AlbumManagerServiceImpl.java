@@ -30,14 +30,16 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
     }
 
     @Override
-    public Album getAlbumById(Long id) {
-        return albumManagerRepository.findById(id).orElseThrow(() ->
-                new ItemNotFoundException(String.format("The album with id '%s' cannot be found.", id)));
+    public List<Artist> getAllArtists() {
+        List<Artist> artists = new ArrayList<>();
+        artistRepository.findAll().forEach(artists::add);
+        return artists;
     }
 
     @Override
-    public Artist addArtist(Artist artist) {
-        return artistRepository.save(artist);
+    public Album getAlbumById(Long id) {
+        return albumManagerRepository.findById(id).orElseThrow(() ->
+                new ItemNotFoundException(String.format("The album with ID %s cannot be found.", id)));
     }
 
     @Override
@@ -63,6 +65,31 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
         Album album = getAlbumById(id);
         albumManagerRepository.delete(album);
         return String.format("Album with ID %s has been deleted", id);
+    }
+
+    @Override
+    public Artist addArtist(Artist artist) {
+        return artistRepository.save(artist);
+    }
+
+    @Override
+    public Artist getArtistById(Long id) {
+        return artistRepository.findById(id).orElseThrow(() ->
+                new ItemNotFoundException(String.format("The artist with ID %s cannot be found.", id)));
+    }
+
+    @Override
+    public Artist updateArtist(Artist artistFound, Artist artistUpdated) {
+        artistFound.setName(artistUpdated.getName());
+        artistFound.setRole(artistUpdated.getRole());
+        return artistRepository.save(artistFound);
+    }
+
+    @Override
+    public String deleteArtistById(Long id) {
+        Artist artist = getArtistById(id);
+        artistRepository.delete(artist);
+        return String.format("Artist with ID %s has been deleted", id);
     }
 
 
@@ -91,18 +118,4 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
         return null;
     }
 
-    @Override
-    public String deleteAlbum(Album album) {
-        return "";
-    }
-
-    @Override
-    public Artist getArtistById(Long id) {
-        return null;
-    }
-
-    @Override
-    public String deleteArtistById(Long id) {
-        return "";
-    }
 }

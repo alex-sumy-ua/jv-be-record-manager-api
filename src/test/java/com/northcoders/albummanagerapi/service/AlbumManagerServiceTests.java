@@ -159,6 +159,4 @@ class AlbumManagerServiceTests {
         assertThat(actualResult).isEqualTo("Album with ID " + albumId + " has been deleted");
     }
 
-
-
 }

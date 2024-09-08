@@ -8,22 +8,22 @@ import java.util.List;
 
 public interface AlbumManagerService {
 
+    Album addAlbum(Album Album);
     List<Album> getAllAlbums();
     Album getAlbumById(Long id);
-    List<Album> getAlbumByArtist(Artist artist);
-    List<Album> getAlbumByYear(int released);
-    List<Album> getAlbumByGenre(Genre genre);
-
-    Album getAlbumByTitle(String title);
-    Album addAlbum(Album Album);
     Album updateAlbum(Album albumFound, Album albumUpdated);
     String deleteAlbumById(Long id);
 
-    // Not in scope but useful
-    String deleteAlbum(Album album);
+    List<Album> getAlbumByYear(int released);
+    List<Album> getAlbumByGenre(Genre genre);
+    Album getAlbumByTitle(String title);
+    List<Album> getAlbumByArtist(Artist artist);
 
+    // Not in scope but useful
     Artist addArtist(Artist artist);
+    List<Artist> getAllArtists();
     Artist getArtistById(Long id);
+    Artist updateArtist(Artist artistFound, Artist artistUpdated);
     String deleteArtistById(Long id);
 
 }

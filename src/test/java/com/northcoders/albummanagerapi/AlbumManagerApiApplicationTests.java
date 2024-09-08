@@ -18,5 +18,4 @@ class AlbumManagerApiApplicationTests {
 		AlbumManagerApiApplication.main(new String[] {});
 	}
 
-
 }
