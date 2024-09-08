@@ -28,7 +28,7 @@ class AlbumManagerServiceTests {
     private ArtistRepository mockArtistRepository;
 
     @InjectMocks
-//    private AlbumManagerService albumManagerService = new AlbumManagerServiceImpl();
+//    private AlbumManagerService albumManagerService = new AlbumManagerServiceImpl(); // is also working
     private AlbumManagerServiceImpl albumManagerService;
 
     @Test
@@ -57,7 +57,7 @@ class AlbumManagerServiceTests {
     }
 
     @Test
-    @DisplayName("Returning the album by given id")
+    @DisplayName("Returning an album by given id")
     void getAlbumByIdTest() {
 
         // Arrange
@@ -83,23 +83,7 @@ class AlbumManagerServiceTests {
     }
 
     @Test
-    @DisplayName("Adding new artist")
-    void addArtistTest() {
-
-        // Arrange
-        Artist artist = new Artist(1L, "George Michael", "Singer");
-
-        when(mockArtistRepository.save(artist)).thenReturn(artist);
-
-        // Act
-        Artist actualResult = albumManagerService.addArtist(artist);
-
-        // Assert
-        assertThat(actualResult).isEqualTo(artist);
-    }
-
-    @Test
-    @DisplayName("Adding new album")
+    @DisplayName("Adding a new album")
     void addAlbumTest() {
 
         // Arrange
@@ -141,22 +125,121 @@ class AlbumManagerServiceTests {
 
     @Test
     @DisplayName("Deleting the album by given id")
-    public void testDeleteBookById() {
+    public void deleteAlbumByIdTest() {
+
         // Arrange
-        Long albumId = 5L;
+        Long albumId1 = 1L;
+        Long albumId5 = 5L;
 
         Artist artist1 = new Artist(1L, "George Michael", "Singer");
         Artist artist2 = new Artist(2L, "Pol Moria Orchestra", "Orchestra");
 
-        Album album1 = new Album(albumId, "Fight", "The first solo album", 1987, artist1, Genre.PROGROCK, 20, 99);
-        Album album2 = new Album(albumId, "The Best", "The best melodies", 2022, artist2, Genre.CLASSICAL, 15, 88);
+        Album album1 = new Album(albumId1, "Fight", "The first solo album", 1987, artist1, Genre.PROGROCK, 20, 99);
+        Album album5 = new Album(albumId5, "The Best", "The best melodies", 2022, artist2, Genre.CLASSICAL, 15, 88);
 
-        when(mockAlbumManagerRepository.findById(albumId)).thenReturn(Optional.of(album2));
-        doNothing().when(mockAlbumManagerRepository).deleteById(albumId);
+        when(mockAlbumManagerRepository.findById(albumId5)).thenReturn(Optional.of(album5));
+        doNothing().when(mockAlbumManagerRepository).deleteById(albumId5);
 
-        String actualResult = albumManagerService.deleteAlbumById(albumId);
+        String actualResult = albumManagerService.deleteAlbumById(albumId5);
 
-        assertThat(actualResult).isEqualTo("Album with ID " + albumId + " has been deleted");
+        assertThat(actualResult).isEqualTo("Album with ID " + albumId5 + " has been deleted");
+    }
+
+    @Test
+    @DisplayName("Adding a new artist")
+    void addArtistTest() {
+
+        // Arrange
+        Artist artist = new Artist(1L, "George Michael", "Singer");
+
+        when(mockArtistRepository.save(artist)).thenReturn(artist);
+
+        // Act
+        Artist actualResult = albumManagerService.addArtist(artist);
+
+        // Assert
+        assertThat(actualResult).isEqualTo(artist);
+    }
+
+    @Test
+    @DisplayName("Returning the list of all artists")
+    void getAllArtistsTest() {
+
+        // Arrange
+        List<Artist> artists = new ArrayList<>();
+        artists.add(new Artist(1L, "George Michael", "Singer"));
+        artists.add(new Artist(2L, "Pol Moria Orchestra", "Orchestra"));
+        artists.add(new Artist(3L, "Pink Floyd", "Band"));
+
+        when(mockArtistRepository.findAll()).thenReturn(artists);
+
+        // Act
+        List<Artist> actualResult = albumManagerService.getAllArtists();
+
+        // Assert
+        assertThat(actualResult).hasSize(3);
+        assertThat(actualResult).isEqualTo(artists);
+    }
+
+    @Test
+    @DisplayName("Returning an artist by given id")
+    void getArtistByIdTest() {
+
+        // Arrange
+        List<Artist> artists = new ArrayList<>();
+        artists.add(new Artist(1L, "George Michael", "Singer"));
+        artists.add(new Artist(2L, "Pol Moria Orchestra", "Orchestra"));
+        artists.add(new Artist(3L, "Pink Floyd", "Band"));
+
+        Artist artist = artists.get(1);
+
+        when(mockArtistRepository.findById(2L)).thenReturn(Optional.ofNullable(artist));
+
+        // Act
+        Artist actualResult = albumManagerService.getArtistById(2L);
+
+        // Assert
+        assertThat(actualResult).isEqualTo(artist);
+    }
+
+    @Test
+    @DisplayName("Updating any fields of the given artist except the id")
+    void updateArtistTest() {
+
+        // Arrange
+        Long artistId = 5L;
+
+        Artist existingArtist = new Artist(artistId, "George Michael", "Singer");
+        Artist updatedArtist = new Artist(artistId, "Pol Moria Orchestra", "Orchestra");
+
+        when(mockArtistRepository.findById(artistId)).thenReturn(Optional.of(existingArtist));
+        when(mockArtistRepository.save(existingArtist)).thenReturn(updatedArtist);
+
+        // Act
+        Artist actualResult = albumManagerService.updateArtist(existingArtist, updatedArtist);
+
+        // Assert
+        assertThat(actualResult).isEqualTo(updatedArtist);
+
+    }
+
+    @Test
+    @DisplayName("Deleting the artist by given id")
+    public void deleteArtistByIdTest() {
+
+        // Arrange
+        Long artistId1 = 1L;
+        Long artistId5 = 5L;
+
+        Artist artist1 = new Artist(artistId1, "George Michael", "Singer");
+        Artist artist5 = new Artist(artistId5, "Pol Moria Orchestra", "Orchestra");
+
+        when(mockArtistRepository.findById(artistId5)).thenReturn(Optional.of(artist5));
+        doNothing().when(mockArtistRepository).deleteById(artistId5);
+
+        String actualResult = albumManagerService.deleteArtistById(artistId5);
+
+        assertThat(actualResult).isEqualTo("Artist with ID " + artistId5 + " has been deleted");
     }
 
 }
