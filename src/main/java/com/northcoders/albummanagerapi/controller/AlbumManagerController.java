@@ -62,14 +62,22 @@ public class AlbumManagerController {
 
     @GetMapping("/albums")  // usage: http://localhost:8082/api/v1/albums
     @Cacheable("albumCache2")
-    public List<Album> getAllAlbums() {
-        return albumManagerService.getAllAlbums();
+//    public List<Album> getAllAlbums() {
+//        return albumManagerService.getAllAlbums();
+//    }
+    public ResponseEntity<List<Album>> getAllAlbums() {
+        List<Album> albums = albumManagerService.getAllAlbums();
+        return new ResponseEntity<>(albums, HttpStatus.OK);
     }
 
     @GetMapping("/album/{id}")  // usage: http://localhost:8082/api/v1/album/2
     @Cacheable("albumCache2")
-    public Album getAlbumById(@PathVariable Long id) {
-        return albumManagerService.getAlbumById(id);
+//    public Album getAlbumById(@PathVariable Long id) {
+//        return albumManagerService.getAlbumById(id);
+//    }
+    public ResponseEntity<Album> getAlbumById(@PathVariable("id") Long id) {
+        Album album = albumManagerService.getAlbumById(id);
+        return new ResponseEntity<>(album, HttpStatus.OK);
     }
 
     @PostMapping("/album")  // usage: http://localhost:8082/api/v1/album

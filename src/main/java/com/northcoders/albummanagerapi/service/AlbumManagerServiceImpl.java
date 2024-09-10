@@ -25,9 +25,10 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public List<Album> getAllAlbums() {
-        List<Album> albums = new ArrayList<>();
-        albumManagerRepository.findAll().forEach(albums::add);
-        return albums;
+//        List<Album> albums = new ArrayList<>();
+//        albumManagerRepository.findAll().forEach(albums::add);
+//        return albums;
+        return new ArrayList<>(albumManagerRepository.findAll());
     }
 
     @Override
