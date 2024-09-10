@@ -13,8 +13,8 @@ import java.util.Optional;
 @Repository
 //public interface AlbumManagerRepository extends CrudRepository<Album, Long> {
 public interface AlbumManagerRepository extends JpaRepository<Album, Long> {
-    List<Album> findByArtist(Artist artist);
-    List<Album> findByReleased(int released);
-    List<Album> findByGenre(Genre genre);
+    Optional<List<Album>> findByArtist(Artist artist);
+    Optional<List<Album>> findByReleased(int released);
+    Optional<List<Album>> findByGenre(Genre genre);
     Optional<Album> findByTitle(String title);
 }

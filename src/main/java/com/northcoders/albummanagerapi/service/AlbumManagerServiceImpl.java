@@ -3,6 +3,7 @@ package com.northcoders.albummanagerapi.service;
 import com.northcoders.albummanagerapi.data.Album;
 import com.northcoders.albummanagerapi.data.Artist;
 import com.northcoders.albummanagerapi.data.Genre;
+import com.northcoders.albummanagerapi.exception.ItemCanNotBeProceededException;
 import com.northcoders.albummanagerapi.exception.ItemNotFoundException;
 import com.northcoders.albummanagerapi.repository.AlbumManagerRepository;
 import com.northcoders.albummanagerapi.repository.ArtistRepository;
@@ -87,24 +88,34 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public String deleteArtistById(Long id) {
-        Artist artist = getArtistById(id);
-        artistRepository.delete(artist);
+        try {
+            Artist artist = getArtistById(id);
+            artistRepository.delete(artist);
+        } catch (RuntimeException e) {
+            throw new ItemCanNotBeProceededException("The artist with ID " + id + " cannot be proceeded because is in use.");
+        }
         return String.format("Artist with ID %s has been deleted", id);
     }
 
     @Override
     public List<Album> getAlbumByArtist(Artist artist) {
-        return albumManagerRepository.findByArtist(artist);
+        return albumManagerRepository.findByArtist(artist).orElseThrow(() ->
+                new ItemNotFoundException(String.format("The album with artist %s cannot be found.", artist.getName())));
+
     }
 
     @Override
     public List<Album> getAlbumByYear(int released) {
-        return albumManagerRepository.findByReleased(released);
+        return albumManagerRepository.findByReleased(released).orElseThrow(() ->
+                new ItemNotFoundException(String.format("The album with release year %s cannot be found.", released)));
+
     }
 
     @Override
     public List<Album> getAlbumByGenre(Genre genre) {
-        return albumManagerRepository.findByGenre(genre);
+        return albumManagerRepository.findByGenre(genre).orElseThrow(() ->
+                new ItemNotFoundException(String.format("The album with genre %s cannot be found.", genre.descriptor)));
+
     }
 
     @Override
