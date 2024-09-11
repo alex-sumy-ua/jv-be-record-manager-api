@@ -89,13 +89,16 @@ public class AlbumManagerServiceImpl implements AlbumManagerService {
 
     @Override
     public String deleteArtistById(Long id) {
-        try {
             Artist artist = getArtistById(id);
+            if (artist == null) { //throw new ItemNotFoundException(String.format("The artist with ID %s cannot be found.", id));
+                return "The artist with ID " + id + " cannot be found."; }
+            try {
             artistRepository.delete(artist);
-        } catch (RuntimeException e) {
-            throw new ItemCanNotBeProceededException("The artist with ID " + id + " cannot be proceeded because is in use.");
-        }
-        return String.format("Artist with ID %s has been deleted", id);
+            } catch (RuntimeException e) {
+    //            throw new ItemCanNotBeProceededException(String.format(, id));
+                    return "The artist with ID " + id + " cannot be proceeded because is in use.";
+            }
+            return String.format("Artist with ID %s has been deleted", id);
     }
 
     @Override

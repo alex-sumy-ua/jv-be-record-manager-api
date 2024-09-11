@@ -35,6 +35,9 @@ class AlbumManagerRepositoryTests {
     @DisplayName("Test getting all artists")
     void testGetAllArtists() {
 
+        albumRepository.deleteAll();
+        artistRepository.deleteAll();
+
         Artist artist1 = new Artist(1L, "George Michael", "Singer");
         Artist artist2 = new Artist(2L, "Pol Moria Orchestra", "Orchestra");
         Artist artist3 = new Artist(3L, "Pink Floyd", "Band");
@@ -122,6 +125,10 @@ class AlbumManagerRepositoryTests {
     @Test
     @DisplayName("Test getting all albums")
     void testGetAllAlbums() {
+
+        albumRepository.deleteAll();
+        artistRepository.deleteAll();
+
         // Prepare test data
         Artist artist1 = new Artist();
         artist1.setName("George Michael");
