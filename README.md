@@ -28,6 +28,10 @@ For the Northcoders Record Shop inventory system, I want the backend API endpoin
 - Spring Data JPA (Java Persistence API)
 - Spring Web
 - Spring Actuator
+- Caching with Caffeine
+- Containerisation with Docker
+- AWS deployment
+- Swagger-ui documentation
 
 ### The data model has been designed online at https://dbdiagram.io/
 
@@ -270,6 +274,61 @@ Usage: The project follows REST principles to expose endpoints for managing Albu
 Description: A build automation tool used primarily for Java projects. It handles project dependencies, builds, and documentation.
 
 Usage: Manages project dependencies and builds the application.
+
+
+### 9. Caching with Caffeine
+
+Description: Caffeine is a high-performance Java caching library that provides various caching strategies, such as time-based expiration and cache invalidation.
+
+Usage: Implemented caching to improve API response times for frequently requested data. Cache invalidation ensures that outdated data is removed when an album or artist is updated or deleted.
+
+Configuration example:
+
+spring.cache.caffeine.spec=expireAfterAccess=20s
+
+This configures a cache that evicts entries after 20 seconds of inactivity.
+
+
+### 10. Containerisation with Docker
+
+Description: Docker is a platform for developing, shipping, and running applications inside lightweight containers.
+
+Usage: The application is containerized using Docker to ensure consistency across environments. It allows the backend API to run in isolated environments and simplifies deployment to any cloud platform.
+
+To build and run the Docker container:
+
+docker build -t albumdb-api:1.0 .
+docker run -p 8082:8082 albumdb-api:1.0
+
+
+### 11. AWS Deployment
+
+Description: Amazon Web Services (AWS) provides a cloud computing platform with various services like EC2, RDS, and S3 for hosting and scaling applications.
+
+Usage: The Record Manager API is deployed on AWS, making it accessible from anywhere. PostgreSQL is hosted using AWS RDS for reliable database services.
+
+#### Steps to deploy:
+
+Create an EC2 instance.
+Install Docker and pull the Docker image.
+Expose port 8082 to allow traffic to the application.
+Use AWS RDS for the PostgreSQL database to handle persistence.
+
+Endpoint to get all albums: http://localhost:8082/api/v1/albums
+
+The same endpoint after deployment: NorthcodersRecordShop-env.eba-ncyb4yiy.eu-west-2.elasticbeanstalk.com/api/v1/albums
+
+
+### 12. Swagger Documentation
+
+Description: Swagger is an open-source tool for building and documenting RESTful APIs. It provides an interactive interface for users to explore API endpoints.
+
+Usage: Swagger is used to document all API endpoints in a structured manner, making it easier for developers and users to test and understand the API functionality.
+
+Endpoint with Swagger Documentation: NorthcodersRecordShop-env-1.eba-ncyb4yiy.eu-west-2.elasticbeanstalk.com/api/v1/albums
+
+The Swagger Documentation is also available in yaml format: NorthcodersRecordShop-env-1.eba-ncyb4yiy.eu-west-2.elasticbeanstalk.com/v3/api-docs.yaml
+
 
 
 #### These technologies work together to provide a robust platform for managing albums and artists, allowing for easy database interactions, JSON processing, and RESTful communication.
