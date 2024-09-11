@@ -1,5 +1,6 @@
 package com.northcoders.albummanagerapi.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Artist {
 
     @Id
@@ -25,4 +27,8 @@ public class Artist {
     private String role;
 
 
+    public Artist(String name, String role) {
+        this.name = name;
+        this.role = role;
+    }
 }

@@ -121,22 +121,22 @@ class AlbumManagerControllerTests {
     void testPostMappingAddAlbum() throws Exception {
 
         Artist artist = new Artist(2L, "George Michael", "Singer");
-
         Album album = new Album(5L, "Fight", "The first solo album", 1987, artist, Genre.PROGROCK, 20, 99);
 
-        when(mockAlbumManagerService.addArtist(artist)).thenReturn(artist);
-        when(mockAlbumManagerService.addAlbum(album)).thenReturn(album);
+        // Mock both addAlbum and getArtistById
+        when(mockAlbumManagerService.getArtistById(anyLong())).thenReturn(artist);
+        when(mockAlbumManagerService.addAlbum(any(Album.class))).thenReturn(album);
 
         this.mockMvcController.perform(
-                MockMvcRequestBuilders.post("/api/v1/album")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsString(album)))
+                        MockMvcRequestBuilders.post("/api/v1/album")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(mapper.writeValueAsString(album)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(5))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Fight"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description").value("The first solo album"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.released").value(1987))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.artist").value(artist))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.artist.id").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.genre").value(Genre.PROGROCK.descriptor))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.price").value(20))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.inStock").value(99));

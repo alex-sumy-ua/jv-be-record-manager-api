@@ -1,5 +1,6 @@
 package com.northcoders.albummanagerapi.data;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,5 +41,20 @@ public class Album {
 
     @Column
     private int inStock;
+
+    public Album(String title, String description, int released, Artist artist, Genre genre, float price, int inStock) {
+        this.title = title;
+        this.description = description;
+        this.released = released;
+        this.artist = artist;
+        this.genre = genre;
+        this.price = price;
+        this.inStock = inStock;
+    }
+
+    @JsonProperty("artist_id")
+    public Long getArtistId() {
+        return artist != null ? artist.getId() : null;
+    }
 
 }

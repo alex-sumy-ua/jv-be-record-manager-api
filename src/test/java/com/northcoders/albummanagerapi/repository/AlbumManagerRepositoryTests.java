@@ -3,6 +3,7 @@ package com.northcoders.albummanagerapi.repository;
 import com.northcoders.albummanagerapi.data.Album;
 import com.northcoders.albummanagerapi.data.Artist;
 import com.northcoders.albummanagerapi.data.Genre;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // Use the actual database or omit for in-memory DB
 @Rollback(false) // To persist changes (omit for auto-rollback in each test)
 class AlbumManagerRepositoryTests {
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     private AlbumManagerRepository albumRepository;
@@ -118,40 +122,89 @@ class AlbumManagerRepositoryTests {
     @Test
     @DisplayName("Test getting all albums")
     void testGetAllAlbums() {
+        // Prepare test data
+        Artist artist1 = new Artist();
+        artist1.setName("George Michael");
+        artist1.setRole("Singer");
 
-        Artist artist1 = new Artist(1L, "George Michael", "Singer");
-        Artist artist2 = new Artist(2L, "Pol Moria Orchestra", "Orchestra");
-        Artist artist3 = new Artist(3L, "Pink Floyd", "Band");
-        artistRepository.save(artist1);
-        artistRepository.save(artist2);
-        artistRepository.save(artist3);
+        Artist artist2 = new Artist();
+        artist2.setName("Pol Moria Orchestra");
+        artist2.setRole("Orchestra");
 
-        Album album1 = new Album(1L, "Fight", "The first solo album", 1987, artist1, Genre.PROGROCK, 20, 99);
-        Album album2 = new Album(2L, "The Best", "The best melodies", 2022, artist2, Genre.CLASSICAL, 15, 88);
-        Album album3 = new Album(3L, "The Wall", "The most famous album", 1982, artist3, Genre.PROGROCK, 18, 60);
-        albumRepository.save(album1);
-        albumRepository.save(album2);
-        albumRepository.save(album3);
+        Artist artist3 = new Artist();
+        artist3.setName("Pink Floyd");
+        artist3.setRole("Band");
 
-        Iterable<Album> albums = albumRepository.findAll();
+        artistRepository.saveAll(List.of(artist1, artist2, artist3));
 
+        Album album1 = new Album();
+        album1.setTitle("Fight");
+        album1.setDescription("The first solo album");
+        album1.setReleased(1987);
+        album1.setArtist(artist1);
+        album1.setGenre(Genre.PROGROCK);
+        album1.setPrice(20);
+        album1.setInStock(99);
+
+        Album album2 = new Album();
+        album2.setTitle("The Best");
+        album2.setDescription("The best melodies");
+        album2.setReleased(2022);
+        album2.setArtist(artist2);
+        album2.setGenre(Genre.CLASSICAL);
+        album2.setPrice(15);
+        album2.setInStock(88);
+
+        Album album3 = new Album();
+        album3.setTitle("The Wall");
+        album3.setDescription("The most famous album");
+        album3.setReleased(1982);
+        album3.setArtist(artist3);
+        album3.setGenre(Genre.PROGROCK);
+        album3.setPrice(18);
+        album3.setInStock(60);
+
+        albumRepository.saveAll(List.of(album1, album2, album3));
+
+        // Fetch all albums
+        List<Album> albums = albumRepository.findAll();
+
+        // Assertions
         assertThat(albums).isNotNull();
         assertThat(albums).hasSize(3);
+        assertThat(albums).extracting("title").containsExactlyInAnyOrder("Fight", "The Best", "The Wall");
     }
 
     @Test
     @DisplayName("Test adding a new album")
     void testAddNewAlbum() {
-        Artist artist = new Artist(1L, "Pink Floyd", "Band");
-        Album album = new Album(1L, "The Wall", "The most famous album", 1982, artist, Genre.PROGROCK, 25, 50);
+        // Prepare test data
+        Artist artist = new Artist();
+        artist.setName("Pink Floyd");
+        artist.setRole("Band");
 
+        // Save artist
         Artist savedArtist = artistRepository.save(artist);
+
+        Album album = new Album();
+        album.setTitle("The Wall");
+        album.setDescription("The most famous album");
+        album.setReleased(1982);
+        album.setArtist(savedArtist);
+        album.setGenre(Genre.PROGROCK);
+        album.setPrice(25);
+        album.setInStock(50);
+
+        // Save album
         Album savedAlbum = albumRepository.save(album);
 
+        // Assertions
         assertThat(savedArtist).isNotNull();
-        assertThat(savedArtist.getId()).isGreaterThan(0);
+        assertThat(savedArtist.getId()).isNotNull();  // Check if ID is generated
         assertThat(savedAlbum).isNotNull();
-        assertThat(savedAlbum.getId()).isGreaterThan(0);
+        assertThat(savedAlbum.getId()).isNotNull();  // Check if ID is generated
+        assertThat(savedAlbum.getTitle()).isEqualTo("The Wall");
+        assertThat(savedAlbum.getArtist()).isEqualTo(savedArtist);
     }
 
     @Test

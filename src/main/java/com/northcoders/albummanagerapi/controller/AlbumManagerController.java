@@ -62,9 +62,6 @@ public class AlbumManagerController {
 
     @GetMapping("/albums")  // usage: http://localhost:8082/api/v1/albums
     @Cacheable("albumCache2")
-//    public List<Album> getAllAlbums() {
-//        return albumManagerService.getAllAlbums();
-//    }
     public ResponseEntity<List<Album>> getAllAlbums() {
         List<Album> albums = albumManagerService.getAllAlbums();
         return new ResponseEntity<>(albums, HttpStatus.OK);
@@ -72,9 +69,6 @@ public class AlbumManagerController {
 
     @GetMapping("/album/{id}")  // usage: http://localhost:8082/api/v1/album/2
     @Cacheable("albumCache2")
-//    public Album getAlbumById(@PathVariable Long id) {
-//        return albumManagerService.getAlbumById(id);
-//    }
     public ResponseEntity<Album> getAlbumById(@PathVariable("id") Long id) {
         Album album = albumManagerService.getAlbumById(id);
         return new ResponseEntity<>(album, HttpStatus.OK);
@@ -83,7 +77,19 @@ public class AlbumManagerController {
     @PostMapping("/album")  // usage: http://localhost:8082/api/v1/album
     @CacheEvict(cacheNames = "albumCache1", allEntries = true)
     public ResponseEntity<Album> addAlbum(@RequestBody Album album) {
+        if (album.getArtist() == null || album.getArtist().getId() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Artist is required
+        }
+
+        // Fetch the artist from the database and set it in the album
+        Artist artist = albumManagerService.getArtistById(album.getArtist().getId());
+        if (artist == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        album.setArtist(artist);
         Album newAlbum = albumManagerService.addAlbum(album);
+
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("album", "/api/v1/album" + newAlbum.getId().toString());
         return new ResponseEntity<>(newAlbum, httpHeaders, HttpStatus.CREATED);
